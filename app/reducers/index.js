@@ -57,7 +57,7 @@ function reposByLanguage(state = {}, action) {
 }
 
 const rootReducer = combineReducers({
-  repos,
+  // repos,
   reposByLanguage,
   selectedLanguage
 })
