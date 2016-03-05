@@ -3,7 +3,10 @@ import {
   SELECT_LANGUAGE,
   INVALIDATE_REPOS,
   REQUEST_REPOS,
-  RECEIVE_REPOS
+  RECEIVE_REPOS,
+  NEXT_PAGE,
+  PREV_PAGE,
+  RESET_PAGE
 } from '../actions'
 
 function selectedLanguage(state = 'javascript', action) {
@@ -35,6 +38,7 @@ function repos(state = {
         isFetching: false,
         didInvalidate: false,
         language: action.language,
+        page: action.page,
         items: action.repos,
         lastUpdated: action.receivedAt
       })
@@ -56,10 +60,24 @@ function reposByLanguage(state = {}, action) {
   }
 }
 
+const initialPaginationState = { page: 1 }
+function pagination(state = initialPaginationState, action) {
+  switch (action.type) {
+    case NEXT_PAGE:
+      return { page: state.page + 1 }
+    case PREV_PAGE:
+      return { page: state.page <= 1 ? 1 : state.page - 1 }
+    case RESET_PAGE:
+      return initialPaginationState
+    default:
+      return state
+  }
+}
+
 const rootReducer = combineReducers({
-  // repos,
   reposByLanguage,
-  selectedLanguage
+  selectedLanguage,
+  pagination
 })
 
 export default rootReducer

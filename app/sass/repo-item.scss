@@ -1,0 +1,33 @@
+$borderColours: orange, blue, green, yellow;
+$borderColoursLength: length($borderColours);
+
+.repo__item {
+  border: 2px solid transparent;
+  border-radius: 3px;
+  margin-bottom: 20px;
+  padding: 20px;
+
+  @for $i from 1 through $borderColoursLength {
+    &:nth-of-type(#{$borderColoursLength}n+#{$i}) {
+      border-color: nth($borderColours, $i);
+    }
+  }
+}
+
+.repo__name {
+  margin-top: 0;
+  word-wrap: break-word;
+}
+
+.repo__owner {
+  color: lighten(#000, 5%);
+  font-style: italic;
+  font-size: 18px;
+}
+
+.repo__stars {
+  .fa-star {
+    color: orange;
+    margin-right: 10px;
+  }
+}

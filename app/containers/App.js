@@ -1,12 +1,28 @@
 import React, { Component, PropTypes } from 'react'
 import { connect } from 'react-redux'
-import { fetchReposIfNeeded, invalidateRepos } from '../actions'
+import {
+  fetchRepos,
+  fetchReposIfNeeded,
+  invalidateRepos,
+  selectLanguage,
+  prevPage,
+  nextPage,
+  resetPage
+} from '../actions'
+
 import RepoList from '../components/RepoList'
+import LanguagePicker from '../components/LanguagePicker'
+import Pagination from '../components/Pagination'
+
+import '../sass/repo-app.scss'
 
 class App extends Component {
   constructor(props) {
     super(props)
     this.handleRefreshClick = this.handleRefreshClick.bind(this)
+    this.handleLanguageChange = this.handleLanguageChange.bind(this)
+    this.onPrevClick = this.onPrevClick.bind(this)
+    this.onNextClick = this.onNextClick.bind(this)
   }
 
   componentDidMount() {
@@ -14,12 +30,36 @@ class App extends Component {
     dispatch(fetchReposIfNeeded(selectedLanguage))
   }
 
+  componentWillReceiveProps(nextProps) {
+    const { dispatch, selectedLanguage, page } = nextProps
+    if (nextProps.selectedLanguage !== this.props.selectedLanguage) {
+      dispatch(resetPage())
+      dispatch(fetchReposIfNeeded(selectedLanguage))
+    } else if (nextProps.page !== this.props.page) {
+      dispatch(fetchRepos({ language: selectedLanguage, page }))
+    }
+  }
+
   handleRefreshClick(e) {
     e.preventDefault()
-
     const { dispatch, selectedLanguage } = this.props
     dispatch(invalidateRepos(selectedLanguage))
     dispatch(fetchReposIfNeeded(selectedLanguage))
+  }
+
+  handleLanguageChange(language) {
+    const { dispatch } = this.props
+    dispatch(selectLanguage(language))
+  }
+
+  onPrevClick() {
+    const { dispatch } = this.props
+    dispatch(prevPage())
+  }
+
+  onNextClick() {
+    const { dispatch } = this.props
+    dispatch(nextPage())
   }
 
   render() {
@@ -27,12 +67,18 @@ class App extends Component {
       repos,
       selectedLanguage,
       isFetching,
-      lastUpdated
+      lastUpdated,
+      page
     } = this.props
     const isEmpty = repos.length === 0
     return (
-      <div>
-        <p>Selected: {selectedLanguage}</p>
+      <div className="repo__app">
+        <h1>Most Starred Github Repos</h1>
+        <LanguagePicker
+          value={selectedLanguage}
+          onChange={this.handleLanguageChange}
+          options={['javascript', 'python', 'go']}
+        />
         <p>
           {lastUpdated &&
             <span>
@@ -58,6 +104,11 @@ class App extends Component {
             <RepoList repos={repos} />
           </div>
         }
+        <Pagination
+          page={page}
+          onPrevClick={this.onPrevClick}
+          onNextClick={this.onNextClick}
+        />
       </div>
     )
   }
@@ -74,7 +125,8 @@ App.propTypes = {
 function mapStateToProps(state) {
   const {
     selectedLanguage,
-    reposByLanguage
+    reposByLanguage,
+    pagination
   } = state
 
   const {
@@ -90,7 +142,8 @@ function mapStateToProps(state) {
     repos,
     isFetching,
     lastUpdated,
-    selectedLanguage
+    selectedLanguage,
+    page: pagination.page
   }
 }
 

@@ -1,0 +1,17 @@
+.repo__list-enter {
+  opacity: 0;
+}
+
+.repo__list-enter.repo__list-enter-active {
+  opacity: 1;
+  transition: opacity 300ms ease-in;
+}
+
+.repo__list-leave {
+  opacity: 1;
+}
+
+.repo__list-leave.repo__list-leave-active {
+  opacity: 0;
+  transition: opacity 300ms ease-out;
+}

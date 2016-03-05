@@ -1,0 +1,16 @@
+.repo__btn {
+  width: 100px;
+  height: 30px;
+  border-radius: 3px;
+  background-color: #ddd;
+  transition: background-color .3s ease;
+  cursor: pointer;
+
+  &:hover {
+    background-color: darken(#ddd, 10%)
+  }
+
+  &:first-of-type {
+    margin-right: 10px;
+  }
+}

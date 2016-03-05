@@ -1,15 +1,19 @@
 import React, { PropTypes, Component } from 'react'
+import RepoItem from './RepoItem'
+
+import '../sass/repo-list.scss'
 
 export default class RepoList extends Component {
   render() {
     return (
-      <ul>
+      <div>
         {this.props.repos.map(repo =>
-          <li key={repo.id}>
-            {repo.full_name}
-          </li>
+          <RepoItem
+            key={repo.id}
+            repo={repo}
+          />
         )}
-      </ul>
+      </div>
     )
   }
 }
